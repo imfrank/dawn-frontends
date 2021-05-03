@@ -7,7 +7,9 @@
 </el-breadcrumb>
 <br/>
     <el-form :inline="true" :model="queryData" class="demo-form-inline">
- 
+  <el-form-item label="产品名称">
+    <el-input v-model="queryData.productName"  placeholder="产品名称"></el-input>
+  </el-form-item>
   <el-form-item label="类别">
       <el-select v-model="queryData.categoryId" placeholder="请选择">
         <el-option
@@ -26,7 +28,7 @@
         <el-table-column      type="selection"      width="50">    </el-table-column>
         <el-table-column      label="图片"    width="150">
           <template  #default="scope">
-              <img :src="scope.row.displayImg" width="120" height="124">
+              <img :src="scope.row.displayImgUri" width="120" height="124">
           </template>    
         </el-table-column>
         <el-table-column      prop="productName"      label="名称"      width="200">    </el-table-column>
@@ -34,7 +36,7 @@
         
         <el-table-column      prop="unitPrice"      label="价格" width="120">    </el-table-column>
         <el-table-column      label="日期"      width="120">    
-          <template  #default="scope">{{ scope.row.date }}</template>
+          <!-- <template  #default="scope">{{ scope.row.date }}</template> -->
         </el-table-column> 
         <el-table-column      prop="remark"      label="备注">    </el-table-column>
          <el-table-column
@@ -43,7 +45,6 @@
       width="100">
       <template #default="scope">
         <el-button @click="preview(scope.row.productId)" type="text" size="small">查看</el-button>
-        <el-button type="text" size="small">编辑</el-button>
       </template>
     </el-table-column>
     </el-table>
@@ -69,11 +70,12 @@
     data() {
       return { 
         queryData: {
-          categoryId:"",        
+          categoryId:"",      
+          productName:""  
         },
         categoryList: [],     
         pageData:{
-          pageSize: 2,
+          pageSize: 10,
           currentPage: 1,
           totalPage: 1,
           totalItem: 0,
@@ -85,7 +87,7 @@
     mounted:function(){      
        var _this = this; 
         axios
-        .get('http://localhost:59505/api/ProductCategory/GetAll')
+        .get('http://1.116.12.73:8000/api/ProductCategory/GetAll')
         .then(function(ajaxMsg){
             _this.categoryList=ajaxMsg.data.data.items;
         })
@@ -120,11 +122,12 @@
       init(){
         const that=this;
          axios
-        .get('http://localhost:59505/api/Product/GetProducts', {
+        .get('http://1.116.12.73:8000/api/Product/GetProducts', {
           params: {
             page: that.pageData.currentPage,
             pageSize: that.pageData.pageSize,
-            categoryId:that.queryData.categoryId
+            categoryId:that.queryData.categoryId,
+            productName:that.queryData.productName,
           }
         })
         .then(res => {

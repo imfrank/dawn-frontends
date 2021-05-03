@@ -2,60 +2,59 @@
    <el-row :gutter="20">
   <el-col :span="4"><div class="grid-content bg-purple"></div>
   </el-col>
-  <el-col :span="7"><div class="grid-content bg-purple">
-      <el-image
-      style="width: 100px; height: 100px"
-      :src="productDetail.displayImgUrl"></el-image>
-    </div></el-col>
-  <el-col :span="5"><div class="grid-content bg-purple">
-    <h3>{{productDetail.productName}}
-    this is the news page.the transform param is {{this.$route.params.productId}}</h3>
+  <el-col :span="7">
+    <div class="grid-content bg-purple">
+       <el-image  :src="productInfo.displayImgUri"  style="width: 400px; height: 385px">
+      <template #placeholder>
+        <div class="image-slot">
+          加载中<span class="dot">...</span>
+        </div>
+      </template>
+    </el-image>
+    </div>
+  </el-col>
+  <el-col :span="4"><div class="grid-content bg-purple">
+    <h3>{{productInfo.productName}}</h3>
   </div>
   </el-col>
   <el-col :span="4"><div class="grid-content bg-purple"></div>
   </el-col>
-</el-row>
- 
-<el-row :gutter="20">
   <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-  <el-col :span="16">
+  <el-col :span="4">  </el-col>
+  <el-col :span="14">
     <div class="grid-content bg-purple">
-    <div class="demo-image__preview">
-      <el-image 
-        style="width: 100px; height: 100px"
-        :src="url" 
-        :preview-src-list="productDetail.ImageList">
-      </el-image>
-    </div>
-    </div>
-    </el-col>
-  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+     <ul>
+      <li v-for="imgUri in productInfo.imageUrls" :key="imgUri">
+        <el-image   :src="imgUri" >      </el-image>
+      </li>
+    </ul> 
+    </div></el-col>
 </el-row>
-
 </template>
 <script>
   import axios from 'axios';
   export default {
     data() {
       return {
-        productDetail:{
+        productInfo:{
           productName:"",
-          displayImgUrl: '',
-          imageList: [ ]
+          displayImgUri: '',
+          imageUrls:[]
         }       
       }
     },
     mounted:function(){
      const that=this;
          axios
-        .get('http://localhost:59505/api/Product/GetDetail', {
+        .get('http://1.116.12.73:8000/api/Product/GetDetail', {
           params: {
               productId:this.$route.params.productId
           }
         })
         .then(res => {
            var  apiRes=res.data;       
-           that.productDetail=apiRes.data;
+           that.productInfo=apiRes.data;
+            console.log(apiRes.data);
         })
         .catch(err => {
          console.log(err);
